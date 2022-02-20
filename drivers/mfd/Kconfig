@@ -2557,6 +2557,7 @@ config MFD_UPBOARD_FPGA
 	  To compile this driver as a module, choose M here: the module will be
 	  called upboard-fpga.
 
+<<<<<<< HEAD
 config MFD_MAX7360
 	tristate "Maxim MAX7360 I2C IO Expander"
 	depends on I2C
@@ -2570,6 +2571,18 @@ config MFD_MAX7360
 	  This driver provides common support for accessing the device;
 	  additional drivers must be enabled in order to use the functionality
 	  of the device.
+=======
+config MFD_STEAMDECK
+	tristate "Valve Steam Deck"
+	select MFD_CORE
+	depends on ACPI
+	depends on X86_64 || COMPILE_TEST
+	help
+	  This driver registers various MFD cells that expose aspects
+	  of Steam Deck specific ACPI functionality.
+
+	  Say N here, unless you are running on Steam Deck hardware.
+>>>>>>> dba9bb1b735a (mfd: Add MFD core driver for Steam Deck)
 
 endmenu
 endif
