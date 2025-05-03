@@ -109,3 +109,7 @@
 #ifdef CONFIG_SCHED_AUTOGROUP
 # include "autogroup.c"
 #endif
+
+#ifdef CONFIG_SCHED_SSS
+# include "sss.c"
+#endif

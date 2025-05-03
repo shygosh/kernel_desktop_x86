@@ -1469,6 +1469,10 @@ enqueue_task_rt(struct rq *rq, struct task_struct *p, int flags)
 {
 	struct sched_rt_entity *rt_se = &p->rt;
 
+#ifdef CONFIG_SCHED_SSS
+	sss_rt_add_factor(rq->cpu, p->normal_prio);
+#endif
+
 	if (flags & ENQUEUE_WAKEUP)
 		rt_se->timeout = 0;
 
@@ -1484,6 +1488,10 @@ enqueue_task_rt(struct rq *rq, struct task_struct *p, int flags)
 static bool dequeue_task_rt(struct rq *rq, struct task_struct *p, int flags)
 {
 	struct sched_rt_entity *rt_se = &p->rt;
+
+#ifdef CONFIG_SCHED_SSS
+	sss_rt_sub_factor(rq->cpu, p->normal_prio);
+#endif
 
 	update_curr_rt(rq);
 	dequeue_rt_entity(rt_se, flags);
@@ -2608,6 +2616,15 @@ static int task_is_throttled_rt(struct task_struct *p, int cpu)
 
 	return rt_rq_throttled(rt_rq);
 }
+#endif
+
+#ifdef CONFIG_SCHED_SSS
+static inline void *select_task_rq_rt_dummy(void)
+{
+	return (void *)select_task_rq_rt;
+}
+
+#define select_task_rq_rt sss_select_task_rq_rt
 #endif
 
 DEFINE_SCHED_CLASS(rt) = {
