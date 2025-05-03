@@ -3956,4 +3956,14 @@ void sched_enq_and_set_task(struct sched_enq_and_set_ctx *ctx);
 
 #include "ext.h"
 
+#ifdef CONFIG_SCHED_SSS
+int sss_select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags);
+int sss_select_task_rq_rt(struct task_struct *p, int prev_cpu, int wake_flags);
+void sss_rt_add_factor(int cpu, int normal_prio);
+void sss_rt_sub_factor(int cpu, int normal_prio);
+void __init sched_sss_init(void);
+int wake_wide(struct task_struct *p);
+void record_wakee(struct task_struct *p);
+#endif
+
 #endif /* _KERNEL_SCHED_SCHED_H */

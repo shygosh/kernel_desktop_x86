@@ -8554,6 +8554,10 @@ void __init sched_init(void)
 	BUG_ON(!sched_class_above(&ext_sched_class, &idle_sched_class));
 #endif
 
+#ifdef CONFIG_SCHED_SSS
+	sched_sss_init();
+#endif
+
 	wait_bit_init();
 
 #ifdef CONFIG_FAIR_GROUP_SCHED
