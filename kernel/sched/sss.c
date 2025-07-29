@@ -7,6 +7,7 @@ static __read_mostly unsigned int sched_sss_smt_bias = 4;
 static __read_mostly unsigned int sched_sss_llc_bias = 4;
 
 #define SSS_FACTOR (SCHED_CAPACITY_SCALE >> 5)
+#define SSS_MARGIN (SCHED_CAPACITY_SCALE >> 4)
 
 static __cacheline_aligned atomic_t sss_rt_factor_bank[CONFIG_NR_CPUS];
 static __read_mostly unsigned int sss_cpu_capacities[CONFIG_NR_CPUS];
@@ -89,6 +90,12 @@ int sss_select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
 		 * won't benefit from it.
 		 */
 		if (wake_flags & WF_EXEC)
+			goto out;
+
+		/*
+		 * Performing cache heuristics on a busy CPU is a bad idea.
+		 */
+		if (curr.factor < SSS_MARGIN)
 			goto out;
 
 		/*
