@@ -8,7 +8,6 @@
 #include "sched.h"
 
 #ifdef CONFIG_SCHED_BORE
-u8   __read_mostly sched_bore                   = 1;
 u8   __read_mostly sched_burst_inherit_type     = 2;
 u8   __read_mostly sched_burst_smoothness       = 1;
 u8   __read_mostly sched_burst_penalty_offset   = 24;
@@ -77,7 +76,7 @@ static void reweight_task_by_prio(struct task_struct *p, int prio) {
 
 u8 effective_prio_bore(struct task_struct *p) {
 	int prio = p->static_prio - MAX_RT_PRIO;
-	prio += p->bore.score & -(s32)sched_bore;
+	prio += p->bore.score;
 	prio &= ~(prio >> 31);
 	s32 diff = prio - maxval_prio;
 	prio -= (diff & ~(diff >> 31));
@@ -267,7 +266,7 @@ static u32 inherit_from_thread_group(struct task_struct *p, u64 now) {
 
 void task_fork_bore(struct task_struct *p,
 	               struct task_struct *parent, u64 clone_flags, u64 now) {
-	if (!task_is_bore_eligible(p) || unlikely(!sched_bore)) return;
+	if (!task_is_bore_eligible(p)) return;
 
 	rcu_read_lock();
 	struct bore_ctx *ctx = &p->bore;
@@ -351,15 +350,6 @@ int sched_burst_inherit_type_update_handler(const struct ctl_table *table,
 
 #ifdef CONFIG_SYSCTL
 static struct ctl_table sched_bore_sysctls[] = {
-	{
-		.procname	= "sched_bore",
-		.data		= &sched_bore,
-		.maxlen		= sizeof(u8),
-		.mode		= 0644,
-		.proc_handler = sched_bore_update_handler,
-		.extra1		= SYSCTL_ZERO,
-		.extra2		= SYSCTL_ONE,
-	},
 	{
 		.procname	= "sched_burst_inherit_type",
 		.data		= &sched_burst_inherit_type,

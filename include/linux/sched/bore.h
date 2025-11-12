@@ -12,7 +12,6 @@
 
 #define SCHED_BORE_VERSION  "6.6.1"
 
-extern u8   __read_mostly sched_bore;
 extern u8   __read_mostly sched_burst_inherit_type;
 extern u8   __read_mostly sched_burst_smoothness;
 extern u8   __read_mostly sched_burst_penalty_offset;
